@@ -4,6 +4,7 @@ TODO
 # Check everything working GOOD
 
 # Review code, refactor imports, PYLINT!
+# Length of lines
 
 # Add testing
 # Use pylint

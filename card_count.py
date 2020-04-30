@@ -119,8 +119,6 @@ class Card_Counter():
         # https://www.888casino.com/blog/side-bets/card-counting-blackjack-insurance
         elif self.strategy_name=='insurance':
             raise ValueError('Insurance count done seperately')
-            suggested_bet = self.min_bet if self.true_count < 2 else self.min_bet*self.bet_spread
-            return suggested_bet
         
         # ko is an unbalanced system. Less AP than hi_lo but no need to TC.
         elif self.strategy_name=='ko':

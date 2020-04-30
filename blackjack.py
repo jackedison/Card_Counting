@@ -373,7 +373,7 @@ class Blackjack():
             
     def check_insurance_payout(self, player):
         if player.insurance_bet > 0:
-            if dealer.best_player_value=='Blackjack':
+            if self.dealer.hand_best_value=='Blackjack':
                 return player.insurance_bet * 2
             else:
                 return player.insurane_bet * -1
@@ -406,9 +406,7 @@ class Blackjack():
         self.inputoutput.dealer_flip_card(self.dealer, self.deck_obj)
 
         self.player_play(self.dealer, print_to_console=False)
-        
-        dealer_output = self.inputoutput.hand_to_print(self.deck_obj, self.dealer.current_hand)
-        
+                
         # 9. Review player hands and payout money
         for i, player in enumerate(self.players):
             if len(player.current_hand) > 0:  # i.e. as long as hand wasn't split

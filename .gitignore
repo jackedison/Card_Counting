@@ -11,7 +11,7 @@ env/
 __pycache__/
 
 # DS_Store if OSX
-.DS_Store/ 
+.DS_Store/
 
 # Any preliminary Jupyter work (remove later if wanting to include Jupyter script)
 *.ipynb

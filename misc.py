@@ -1,48 +1,51 @@
 # Miscellaneous code for testing during development
 
 # In[]: Is it faster to append and refer to a dictionary or 2 lists?
-
+import random
 from timeit import default_timer
 
 players = ['Player 1', 'Player 2', 'Player 3']
 sims = 1000000
+
 
 def timer(func):
     def wrapper_timer(*args, **kwargs):
         start = default_timer()
         result = func(*args, **kwargs)
         end = default_timer()
-        print('Function \'{}\' took {:.7f}s to run'.format(func.__name__, end-start))
+        print('Function \'{}\' took {:.7f}s to run'.format(func.__name__,
+              end-start))
         return result
     return wrapper_timer()
-    
+
+
 @timer
 def test_list():
     lst = [[] for player in players]
-    for sim in range(sims):
-        for i, player in enumerate(players):
+    for _ in range(sims):
+        for i, _ in enumerate(players):
             lst[i].append(i)
+
 
 @timer
 def test_dic():
-    dic = {player:[] for player in players}
-    for sim in range(sims):
+    dic = {player: [] for player in players}
+    for _ in range(sims):
         for i, player in enumerate(players):
             dic[player].append(i)
 
-
-# Conclusion: they are about the same so use dic/hash tables for improved readability
-
-
+# Conclusion: they are about the same so use dic/hash table for readability
 
 # In[]: Kelly Criterion simulation tests of mathematical proof
-import random
+
 
 odds_to_win = 0.8
 static_bet_size = 0.8
 
+
 def win_or_loss():
     return random.random() <= odds_to_win
+
 
 def gamble(times, starting_cash, print_cash=True):
     cash = starting_cash
@@ -55,8 +58,9 @@ def gamble(times, starting_cash, print_cash=True):
             cash -= bet
         if print_cash:
             print('$ {:,.0f}'.format(cash))
-            
+
     return cash
+
 
 def gamble_kelly_criterion(times, starting_cash, print_cash=True):
     cash = starting_cash
@@ -70,25 +74,29 @@ def gamble_kelly_criterion(times, starting_cash, print_cash=True):
         if print_cash:
             print('$ {:,.0f}'.format(cash))
 
-            
     return cash
+
 
 def test_kelly_criterion():
     '''Simple snippet to test the Kelly Criterion vs other gambling ratios'''
     kelly_wins = 0
     for _ in range(1000):
         result = gamble(times=100, starting_cash=1000, print_cash=False)
-        result2 = gamble_kelly_criterion(times=100, starting_cash=1000, print_cash=False)
+        result2 = gamble_kelly_criterion(times=100, starting_cash=1000,
+                                         print_cash=False)
         if result2 > result:
             kelly_wins += 1
 
+    print('Kelly criterion beats {:.0f}% bet {} times out of 1000'.
+          format(static_bet_size*100, kelly_wins))
 
-    print('Kelly criterion beats {:.0f}% bet {} times out of 1000'.format(static_bet_size*100, kelly_wins))
+
+# In[]: Code to convert Edward O Thorps basic strategy from 1960s Beat the
+# Dealer to dic/JSON for use in BasicStrategy method
 
 
-# In[]: Code to convert Edward O Thorps basic strategy from 1960s Beat the Dealer to dic/JSON for use in BasicStrategy method
 def read_basic_strat():
-    string='''
+    string = '''
 4	H	H	H	H	H	H	H	H	H	H
 5	H	H	H	H	H	H	H	H	H	H
 6	H	H	H	H	H	H	H	H	H	H
@@ -126,7 +134,7 @@ A,9	S	S	S	S	S	S	S	S	S	S
 T,T	S	S	S	S	S	S	S	S	S	S
 A,A	P	P	P	P	P	P	P	P	P	P
             '''
-    
+
     dic = {}
     count = 12
     next_row_header = ''
@@ -144,8 +152,8 @@ A,A	P	P	P	P	P	P	P	P	P	P
                 if ord(char) is not 9:
                     dic[row_header][count] = char
                     count += 1
-                    
+
     for key in dic:
         print('\'{}\': '.format(key), end='')
         print(dic[key], end='')
-        print(',') 
+        print(',')

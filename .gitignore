@@ -1,2 +1,17 @@
 # virtualenv
 env/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Vscode (settings.json for editor)
+.vscode/
+
+# Pycache
+__pycache__/
+
+# DS_Store if OSX
+.DS_Store/ 
+
+# Any preliminary Jupyter work (remove later if wanting to include Jupyter script)
+*.ipynb

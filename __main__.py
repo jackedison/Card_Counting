@@ -11,10 +11,8 @@ blackjack.play_game()
 
 
 
-
 # In[]
 # ### Initiate a simulated game in the terminal ###
-
 blackjack = Blackjack(players=['Jack', 'Kath'], human_player=False)
 
 blackjack.play_game(rounds=3)
@@ -24,7 +22,7 @@ blackjack.play_game(rounds=3)
 # Simulate a strategy over a long game
 import simulations
 
-simulations.simulate(num_rounds=208_000, players=['Player ' + str(i+1) for i in range(10)], player_bankroll=100_000, 
+simulations.simulate(num_rounds=208_000, players=['Player ' + str(i+1) for i in range(10)], player_bankroll=100_000,
          min_bet=25, bet_spread=16, strategy_name='zen')
 
 

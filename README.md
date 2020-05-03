@@ -1,4 +1,4 @@
-![](https://images.unsplash.com/photo-1559813195-53f6dccb5c95?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80)
+<img src="https://cdn.pixabay.com/photo/2015/11/07/11/08/cards-1030852_1280.jpg" alt="Blackjack" width="640" height="425">
 
 
 # Blackjack Card Counting Strategy Monte Carlo & Terminal Human/Machine Playable Game

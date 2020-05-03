@@ -1,9 +1,10 @@
 import random
-from formatting import colour
-from bj_io import InputOutput
-from players import *
-from card_count import Card_Counter
-from strategy import BasicStrategy
+
+from .formatting import colour
+from .bj_io import InputOutput
+from .players import *
+from .card_count import Card_Counter
+from .strategy import BasicStrategy
 # Imports are slightly messy due to creation in Jupyter - could refactor
 
 
@@ -422,6 +423,9 @@ class Blackjack():
         return 0
 
     def play_hand(self):
+        # 1. Start round
+        self.inputoutput.start_hand(self.round)
+
         # 2. Dealer gives 1 card to player (each player if multiple)
         for player in self.players:
             self.deal_card(player)
@@ -438,9 +442,9 @@ class Blackjack():
         self.deal_card(self.dealer)
 
         # 6. Dealer peeks / does not peek for Blackjack
-        if self.dealer_peeks_for_bj:
-            if self.dealer.hand_best_value == 'Blackjack':
-                pass
+        if self.dealer_peeks_for_bj and \
+           self.dealer.hand_best_value == 'Blackjack':
+            pass
         else:
             # 7. Players are prompted on move
             for i, player in enumerate(self.players):
@@ -491,13 +495,17 @@ class Blackjack():
         if len(self.deck_obj.deck) <= pen:
             self.shuffle(re_add_discard_deck=True)
 
+        # 13. End round
+        self.inputoutput.end_hand(self.round)
+
     def play_round(self):
         self.take_bets()
 
         self.play_hand()
 
-    def play_game(self, rounds=1):
+    def play_game(self, rounds=100):
         self.inputoutput.welcome()
 
-        for _ in range(rounds):
+        for rnd in range(rounds):
+            self.round = rnd+1
             self.play_round()

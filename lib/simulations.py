@@ -1,9 +1,9 @@
 # ### Simulate many hands with a card counting strategy ###
-
-from modelling import plot_hands
-from modelling import plot_distr
-from blackjack import Blackjack
 import numpy as np
+
+from .modelling import plot_hands
+from .modelling import plot_distr
+from .blackjack import Blackjack
 
 # Option to modify:
 # * Num players

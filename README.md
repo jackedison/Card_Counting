@@ -1,12 +1,9 @@
 ![](https://images.unsplash.com/photo-1559813195-53f6dccb5c95?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80)
 
-TODO
-* Proper execution of main methods
-* README.md
 
-# Blackjack Card Counting Strategy Simulator & Terminal Human/Machine Playable Game
+# Blackjack Card Counting Strategy Monte Carlo & Terminal Human/Machine Playable Game
 
-This package allows for the simulation of **Blackjack card counting strategies**. By default the simulations will run under a liberal Vegas shoe ruleset, however, almost any parameter in this package (ruleset, strategy, simulations) can be alterred to the user's preferences.
+This package allows for Monte Carlo simulation of **Blackjack card counting strategies**. Rulesets, strategies, and simulation parameters are all adjustable to meet user preferences. Default parameters run under a liberal Vegas shoe.
 
 Simulations using this package provide a clear representation of the player's winrate as well as the distribution of play. By adjusting parameters the user can compare rulesets, strategies, player position, bet spreads, and more.
 
@@ -33,11 +30,73 @@ Then change directory to the cloned repository:
 
 Once you have cloned to a local repository you are ready to begin running simulations.
 
+There are 3 modules which the user can run from command line:
+
 1. play_blackjack.py
 2. simulate_blackjack.py
 3. simulate_distr.py
 
-Ruleset adjustments
+## Play Blackjack in the terminal - play_blackjack.py
+
+The most simple feature is the ability to play blackjack in the terminal. This allows you to test functionality and ruleset responses.
+
+To play run `python3 play_blackjack.py`
+
+By default this will run a blackjack game under a liberal Vegas shoe, that is:
+* 6 decks
+* 75% penetration
+* 3 to 2 blackjack payout
+* Dealer stands on soft 17
+
+### Argparse adjustments
+Game parameters and ruleset can be adjusted through command line using argparse.
+
+#### Example 1: Adjust the number of players: -p
+Default number of players is 1. 
+
+For example, to adjust the number of players to 3:
+
+`python3 play_blackjack.py -p 3`
+
+#### Example 2: Adjust the penetration: -pe
+Default penetration is 0.75 (75% of deck).
+
+For example, to adjust the penetration to 50%:
+
+`python3 play_blackjack.py -pe 0.5`
+
+#### Example 3: Dealer peaks for blackjack: -dp
+Default dealer does **not** peak for blackjack.
+
+Note for a boolean you do not need to input a flag after the argument. For example, to enable peak for blackjack:
+
+`python3 play_blackjack.py -dp`
+
+#### All current Argparse parameters
+
+| Parameter                  	| Arg 	| Default 	| Type  	|
+|----------------------------	|-----	|---------	|-------	|
+| Number of players          	| -p  	| 1       	| int   	|
+| Starting bankroll          	| -b  	| 1000    	| int   	|
+| Number of decks            	| -d  	| 6       	| int   	|
+| Deck penetration           	| -pe 	| 0.75    	| float 	|
+| Blackjack payout           	| -bp 	| 1.5     	| float 	|
+| Win payout                 	| -wp 	| 1       	| float 	|
+| Push payout                	| -pp 	| 0       	| float 	|
+| Loss payout                	| -lp 	| 1       	| float 	|
+| Surrender payout           	| -sp 	| 0.5     	| float 	|
+| Dealer stands on hard      	| -sh 	| 17      	| int   	|
+| Dealer stands on soft      	| -ss 	| 17      	| int   	|
+| Late surrender allowed     	| -ls 	| True    	| bool  	|
+| Early surrender allowed    	| -es 	| False   	| bool  	|
+| Dealer peaks for blackjack 	| -dp 	| False   	| bool  	|
+
+## Simulate card counting strategies - simulate_blackjack.py
+
+The principal purpose of this package is to enable simulations of millions of hands. This allows for the testing of card counting strategies under specific rulesets, returning player win rates and session distributions.
+
+To simulate run `python3 simulate_blackjack.py`
+
 
 
 
@@ -90,7 +149,7 @@ Player advantage seems to be pretty subjective
 
 ## Possible extensions
 
-This project is by no means complete and there are almost endless possibilities for extension. Highlighted below are areas I feel would be best to target next.
+This project is by no means complete and there are almost endless possibilities for extension. This project allows for a framework to build from. Highlighted below are areas I feel would be best to target next.
 
 Smart machine moves can be computed in 3 ways:
 1. Make bet based on basic strategy

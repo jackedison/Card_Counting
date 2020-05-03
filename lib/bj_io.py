@@ -1,4 +1,4 @@
-from strategy import BasicStrategy
+from .strategy import BasicStrategy
 
 
 class InputOutput():
@@ -197,6 +197,12 @@ class InputOutput():
                 player.insurance_bet))
         else:  # No insurance bet taken
             pass
+
+    def start_hand(self, round):
+        self.terminal('Hand {}'.format(round))
+
+    def end_hand(self, round):
+        self.terminal('Hand {} finished\n'.format(round))
 
     def get_user_bets(self, player, human_player=True):
         collecting_input = True

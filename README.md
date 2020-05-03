@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://cdn.pixabay.com/photo/2015/11/07/11/08/cards-1030852_1280.jpg" alt="Blackjack" width="640" height="425">
+<img src="https://cdn.pixabay.com/photo/2015/11/07/11/08/cards-1030852_1280.jpg" alt="Blackjack" width="1000" height="425">
 </p>
 
 

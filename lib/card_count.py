@@ -56,7 +56,7 @@ class Card_Counter():
                 assert custom_strategy is type(list) and \
                     len(custom_strategy) == 13
                 self.strategy = custom_strategy  # User custom strategy
-                self.strategy_name = 'Custom strategy'
+                self.strategy_name = 'custom'
         else:
             self.strategy_name = strategy_name.lower()
             strategy = self.strategies.get(self.strategy_name)
@@ -174,6 +174,12 @@ class Card_Counter():
 
         # zen - basic balanced strategy with true count
         elif self.strategy_name == 'zen':
+            suggested_bet = self.min_bet if self.true_count < 2 \
+                            else self.min_bet*self.bet_spread
+            return suggested_bet
+
+        # zen - basic balanced strategy with true count
+        elif self.strategy_name == 'custom':
             suggested_bet = self.min_bet if self.true_count < 2 \
                             else self.min_bet*self.bet_spread
             return suggested_bet

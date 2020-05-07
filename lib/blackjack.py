@@ -71,6 +71,8 @@ class Blackjack():
         self.dealer_peeks_for_bj = dealer_peeks_for_bj
         self.strategy_name = strategy_name
 
+        self.round = 0
+
         # Initiate deck object
         self.deck_obj = Deck(num_of_decks)
 

@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://cdn.pixabay.com/photo/2015/11/07/11/08/cards-1030852_1280.jpg" alt="Blackjack" width="1000" height="425">
+<img src="https://cdn.pixabay.com/photo/2015/11/07/11/08/cards-1030852_1280.jpg" alt="Blackjack" width="640" height="425">
 </p>
 
 
@@ -7,7 +7,7 @@
 
 This package allows for Monte Carlo simulation of **Blackjack card counting strategies**. Rulesets, strategies, and simulation parameters are all adjustable to meet user preferences. Default parameters run under a liberal Vegas shoe.
 
-Simulations using this package provide a clear representation of the player's winrate as well as the distribution of play. By adjusting parameters the user can compare rulesets, strategies, player position, bet spreads, and more.
+Simulations using this package provide a clear representation of the player's winrate, distribution of play, and drawdown. By adjusting parameters the user can compare rulesets, strategies, player position, bet spreads, and more.
 
 # Getting started
 ### Prerequisites
@@ -32,11 +32,11 @@ Then change directory to the cloned repository:
 
 Once you have cloned to a local repository you are ready to begin running simulations.
 
-There are 3 modules which the user can run from command line:
+There are three modules which the user can run from command line:
 
 1. play_blackjack.py
-2. simulate_blackjack.py
-3. simulate_distr.py
+2. simulate_game.py
+3. simulate_games.py
 
 ## Play Blackjack in the terminal - play_blackjack.py
 
@@ -49,6 +49,8 @@ By default this will run a blackjack game under a liberal Vegas shoe, that is:
 * 75% penetration
 * 3 to 2 blackjack payout
 * Dealer stands on soft 17
+
+The ruleset will be printed at the beginning of the game.
 
 ### Argparse adjustments
 Game parameters and ruleset can be adjusted through command line using argparse.
@@ -78,30 +80,48 @@ Note for a boolean you do not need to input a flag after the argument. For examp
 
 | Parameter                  	| Arg 	| Default 	| Type  	|
 |----------------------------	|-----	|---------	|-------	|
-| Number of players          	| -p  	| 1       	| int   	|
-| Starting bankroll          	| -b  	| 1000    	| int   	|
+| Number of players          	| -p  	| 3       	| int   	|
+| Starting bankroll          	| -b  	| 10000    	| int   	|
+| Number of rounds           	| -r 	| 100   	| int  	    |
 | Number of decks            	| -d  	| 6       	| int   	|
 | Deck penetration           	| -pe 	| 0.75    	| float 	|
 | Blackjack payout           	| -bp 	| 1.5     	| float 	|
 | Win payout                 	| -wp 	| 1       	| float 	|
 | Push payout                	| -pp 	| 0       	| float 	|
-| Loss payout                	| -lp 	| 1       	| float 	|
-| Surrender payout           	| -sp 	| 0.5     	| float 	|
+| Loss payout                	| -lp 	| -1       	| float 	|
+| Surrender payout           	| -sp 	| -0.5     	| float 	|
 | Dealer stands on hard      	| -sh 	| 17      	| int   	|
 | Dealer stands on soft      	| -ss 	| 17      	| int   	|
 | Late surrender allowed     	| -ls 	| True    	| bool  	|
 | Early surrender allowed    	| -es 	| False   	| bool  	|
 | Dealer peaks for blackjack 	| -dp 	| False   	| bool  	|
 
+For example further information and example usage of all parameters type:
+
+ `python play_blackjack.py -h` or `python play_blackjack.py --help`
+
 ## Simulate card counting strategies - simulate_blackjack.py
 
 The principal purpose of this package is to enable simulations of millions of hands. This allows for the testing of card counting strategies under specific rulesets, returning player win rates and session distributions.
 
-To simulate run `python3 simulate_blackjack.py`
+Either:
 
+* To simulate run one long round of blackjack run `python3 simulate_game.py` or
+* To simulate many rounds and view the distribution of play resuls run `python simulate_games.py`
 
+As with the human playable game, Argparse parameters can be passed to adjust the ruleset. All of the above Argparse parameters can also be passed here as well as the below.
 
+#### Additional Argparse parameters for simulations
 
+| Simulation exclusive parameter| Arg 	| Default 	| Type  	|
+|----------------------------	|-----	|---------	|-------	|
+| Card Counting Strategy        | -s  	| hi_lo     | string   	|
+| Custom  Strategy              | -cs  	| None      | list   	|
+| Bet Spread          	        | -bs  	| 16    	| int   	|
+| Minimum Bet          	        | -mb  	| 1    	    | int   	|
+| Number of simulations *       | -sim	| 1000    	| int   	|
+
+*The number of simulations you can run will be limited by your hardware. >1,000,000 should run in >2 minutes on a standard machine.
 
 Included card counting strategies and their parameter names are:
 * [hi_lo](https://wizardofodds.com/games/blackjack/card-counting/high-low/)
@@ -114,76 +134,59 @@ Included card counting strategies and their parameter names are:
 * [red_7](https://www.gamblingonline.com/blackjack/card-counting/)
 * [zen](https://www.onlineblackjackrealmoney.org/card-counting/zen-count)
 
-Users may also input their own custom card counting strategy with the following syntax:
-* `TODO`
+Users may also input their own custom card counting strategy. This strategy should be input as a list of length 13. Each element should indicate the count adjustment for card ranging from Ace to King.
+
+For example, hi_lo as: `python3 simulate_games.py -cs [-1, 1, 1, 1, 1, 1, 0, 0, 0, -1, -1, -1, -1]`
 
 When running simulations the player will play according to Edward Thorp's basic strategy contingent on the ruleset (for doubling, splitting, insuring, etc.)
 
-Additional Rules to customise by? https://wizardofodds.com/games/blackjack/calculator/
+Betting is scaled at RC or TC > 2 depending on the strategy. Custom strategies will adjust the bet spread at TC > 2 by default.
 
+### Results
 
-### Player Advantage
-Define baseline of player advantage
-Player advantage - how do we define this? We could define % of time they are up or down over 1 hand?
-That would only reflect basic strategy and not payouts still. So % 
+Running a simulation of one game will display the following:
+* End bankroll by player
+* Min bankroll by player during session
+* A plot of player bankroll's through the session saved to Figures/
 
-For every $100 you bet how much will you win or lose?
-DEPENDS HOW YOU BET THE $100? BET SIZING?
+![](Figures/Examples/player_bankrolls.png)
 
-Aces and fives have the biggest effect on player/casino odds so can do ok by just counting them
+Running a simulation of multiple games will display the following:
+* Mean final bankroll by player
+* Standard deviation of bankrolls by player
+* Overall mean and standard deviation of all hands
+* Estimated player advantage*
+* A plot of the distribution of final bankrolls of each player saved to Figures/
 
-Measure expected value per 100 hands (in an hour)
-Player advantage is how much on average as a % they are up after 1 hour
+![](Figures/Examples/hi_lo_100rounds_1000sims_10minbet_16betspread_10000startingbankroll.png)
 
-Run 10k simulations of 100 rounds
-Take standard deviation of the results too
-Plot distribution with bars and best fit of normal distribution curve based on mean and sd
-
-Playing more than 100 rounds would increase odds, add ability to alter that. TC=0 at start ofc. Penetration less key too
-
-Bet spread is key btw
-Player advantage seems to be pretty subjective
-
-
-
-
-
+*Standard practice for player advantage is assumed as mean change in bankroll following a 100 hand game
 
 ## Possible extensions
 
-This project is by no means complete and there are almost endless possibilities for extension. This project allows for a framework to build from. Highlighted below are areas I feel would be best to target next.
+This project started out as a small personal project and is by no means complete. While undertaking this project it became clear that there are almost endless possibilities for extension. Highlighted below are areas I feel would be best to target next.
 
-Smart machine moves can be computed in 3 ways:
-1. Make bet based on basic strategy
-2. Make bet based on optimal play for current deck - computed by simulations
-3. Make bet based on optimal play for current deck - computed by efficient combinatorics of current deck
- 
-* Currently the machine player plays on basic strategy as this is a better representation of how a card counter would play in a casino. However, extending this code to play the optimal play based on remaining deck would enable odds checking vs absolute optimal play as well as optimal bet sizing using Kelly Criterion.
+#### Additional ruleset adjustments
+There are a plethora of ruleset alterations casinos offer these days. Additional splitting, surrendering, and doubling down rules would be straightforward to implement where required.
 
-* A closer proxy to optimal play would be to use derivatives of basic strategy based on current count. These could also be generated as an extension to this piece of work using combinatorics.
+#### Adjust the play decision based on combinatorics
+Currently play decisions will be made by following basic blackjack strategy contingent on the ruleset. Combinatorics could be used to calculate the optimal move contingent on the remaining deck.
 
-* Kelly Criterion, as the most efficient bet sizing, based on current bankroll could be implemented here alongside the above. This could be replicated in casino play once derivatives of basic strategy are mastered. 
+Additionally, for a more human adoptable approach, play decision could be alterred to the key derivations of whichever strategy is being simulated.
 
-* Extra rulesets could be allowed such as those found here: https://wizardofodds.com/play/blackjack-v2/ and https://www.qfit.com/blackjack-rules-surrender.htm
+#### Kelly Criterion for bet sizing
+The most efficient bet sizing would follow [Kelly Criterion](https://en.wikipedia.org/wiki/Kelly_criterion) based on the win rate of the current hand. Although unreasonable for a human player to implement, if implemented here alongside play decision combinatorics it would offer a benchmark to computer optimal play.
 
+Implementation of play according to the Kelly Criterion would also enable SCORE analysis. (Kelly Criterion to achieve 13.5% risk of ruin)
 
-* Implement insurance count to further get odds for AP
+#### Insurance count
+Insurance count, dictating when it is preferential to take insurance, is trivial and has been implemented in the Card_Counter() class. Adapting basic strategy to take advantage of this could be implemented to get additional odds for AP.
 
-* Could implement bet scaling / Kelly criterion
+#### Custom strategy additions
+Options for the user to alter betting preferences and count adjustments (e.g. TC v RC) with their custom strategy could be implemented. (Note: current error here.)
 
-* Add proper testing (unit tests etc.) - if project is further developed
+#### Testing
+No proper testing/unit tests have been implemented yet as it has been a fairly straightforward project. However, if the project were extended it would be good practice.
 
-
-
-Kelly Criterion, to achieve a 13.5% risk of ruin
-
-SCORE is an acronym, coined by Don Schlesinger, for Standardized Comparison Of Risk and Expectation. 
-
-It is defined as the advantage squared divided by the variance. The SCORE may also be interpreted as the expected hourly win per hand for a player with a $10,000 bankroll, who sizes his bets according to the Kelly Criterion, to achieve a 13.5% risk of ruin.
-
-https://wizardofodds.com/games/blackjack/ace-five-count/
-
-
-
-Style guidelines used for the code are pylint and pycodestyle (pep8 vscode).
+If you're interested in extending the code then feel free to get in touch! Current style guidelines used are pylint and pycodestyle (pep8 vscode).
 

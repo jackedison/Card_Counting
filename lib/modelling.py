@@ -4,10 +4,11 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
                                AutoMinorLocator)
 from scipy.stats import norm
 import numpy as np
+import os
 
 
-def plot_hands(players, data, showfig=False):
-    hand_num = [[i for i in range(1, len(data[0])+1)] for player in players]
+def plot_hands(players, data, hand_num, showfig=False):
+    #hand_num = [[i for i in range(1, len(data[0])+1)] for player in players]
 
     if not showfig:
         plt.ioff()
@@ -28,14 +29,12 @@ def plot_hands(players, data, showfig=False):
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
 
-    plt.xlim(0, len(data[0])+1)
+    plt.xlim(0, hand_num[0][-1])
 
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:,.0f}'))
 
     plt.legend([name for name in players], fontsize=16)
-
-    import os
 
     fig_loc = 'Figures' + os.sep
     file_name = 'player_bankrolls.png'

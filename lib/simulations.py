@@ -1,4 +1,4 @@
-# ### Simulate many hands with a card counting strategy ###
+# ### simulate_game many hands with a card counting strategy ###
 import numpy as np
 
 from .modelling import plot_hands
@@ -14,17 +14,19 @@ from .blackjack import Blackjack
 # * Card counting strategy
 
 
-def simulate(num_rounds, min_bet=1, bet_spread=8, player_bankroll=1000,
-             players=[''], strategy_name='hi_lo'):
+def simulate_game(blackjack, num_rounds):
 
-    # Initiate the Blackjack game object
-    blackjack = Blackjack(players=players, player_bankroll=player_bankroll,
-                          human_player=False, print_to_terminal=False,
-                          min_bet=min_bet, bet_spread=bet_spread)
+    # Collect variables from blackjack game for future reference
+    players = [player.name for player in blackjack.players]
+    player_bankroll = blackjack.players[0].bankroll
+    min_bet = blackjack.min_bet
+    bet_spread = blackjack.bet_spread
+    strategy_name = blackjack.strategy_name
 
     # Player the number of rounds
     min_bankrolls = [player_bankroll for player in players]
     arr_bankroll = [[] for player in players]
+    hand_num = [[] for player in players]
     ax_freq = num_rounds//2000+1  # Aim for 2000 data points to plot
     for i in range(num_rounds):  # Play each hand from here to track parameters
         for j, player in enumerate(players):
@@ -33,6 +35,7 @@ def simulate(num_rounds, min_bet=1, bet_spread=8, player_bankroll=1000,
 
             if i % ax_freq == 0:  # Only take ~2000 data points to plot
                 arr_bankroll[j].append(blackjack.players[j].bankroll)
+                hand_num[j].append(i+1)
 
         blackjack.play_round()
 
@@ -44,44 +47,58 @@ def simulate(num_rounds, min_bet=1, bet_spread=8, player_bankroll=1000,
                      player.bankroll))
         gains += player.bankroll - player_bankroll
 
-        print('Total gains ${:,.0f} with ${} min_bet, {}x bet spread, {} card \
-               counting over {:,} hands'.format(
+        print('Total gains ${:,.0f} with ${} min_bet, {}x bet spread, {} card '
+              'counting over {:,} hands'.format(
                gains, min_bet, bet_spread, strategy_name, num_rounds))
-        print('Min bankroll ${:,.0f}, so max drawdown was ${:,.0f} [{:.2f}%]'.
+        print('Min bankroll was ${:,.0f}, a drawdown of ${:,.0f} [{:.2f}%]'.
               format(min_bankrolls[i], player_bankroll-min_bankrolls[i],
                      (player_bankroll-min_bankrolls[i])/player_bankroll*100))
 
         print('')
 
-    hands_pr_hr = 100
-    hrs_per_day = 8
-    working_days_per_yr = 260
-    yrs = num_rounds * len(blackjack.players) / \
-        hands_pr_hr / hrs_per_day / working_days_per_yr
-    print('{:.1f}yrs of {}h working days playing {} hands of Blackjack per \
-        hour total'.format(yrs, hrs_per_day, hands_pr_hr))
-
-    plot_hands(players, arr_bankroll)
+    plot_hands(players, arr_bankroll, hand_num)
 
 
-# ### Simulate distribution and player win rate of many hands ###
+# ### simulate_game distribution and player win rate of many hands ###
 
-def simulate2(num_rounds, num_sims, min_bet=1, bet_spread=8,
-              player_bankroll=10_000,
-              players=[''], strategy_name='hi_lo', showfig=False):
+def simulate_games(args, showfig=False):
+
+    # Intepret terminal parser inputs
+    num_rounds = args.rounds
+    num_sims = args.simulations
+
+    players = ['Player {}'.format(i+1) for i in range(args.players)]
 
     # Store params to save fig later
     params = '{}_{}rounds_{}sims_{}minbet_{}betspread_{}startingbankroll'\
-        .format(strategy_name, num_rounds, num_sims, min_bet, bet_spread,
-                player_bankroll)
+        .format(args.strategy, num_rounds, num_sims, args.min_bet,
+                args.bet_spread, args.bankroll)
 
     final_bankrolls = {player: [] for player in players}
     for _ in range(num_sims):
         # Initiate the Blackjack game object
-        blackjack = Blackjack(players=players, player_bankroll=player_bankroll,
-                              human_player=False, print_to_terminal=False,
-                              min_bet=min_bet, bet_spread=bet_spread,
-                              strategy_name=strategy_name)
+        blackjack = Blackjack(players=players,
+                              num_of_decks=args.decks,
+                              blackjack_payout=args.blackjack_payout,
+                              win_payout=args.win_payout,
+                              push_payout=args.push_payout,
+                              loss_payout=args.loss_payout,
+                              surrender_payout=args.surrender_payout,
+                              dealer_stand_on_hard=args.stand_on_hard,
+                              dealer_stand_on_soft=args.stand_on_soft,
+                              late_surrender=args.late_surrender,
+                              early_surrender=args.early_surrender,
+                              player_bankroll=args.bankroll,
+                              reshuffle_penetration=args.penetration,
+                              dealer_peeks_for_bj=args.dealer_peaks,
+
+                              print_to_terminal=False,
+                              human_player=False,
+
+                              min_bet=args.min_bet,
+                              bet_spread=args.bet_spread,
+                              strategy_name=args.strategy,
+                              )
 
         # Play the number of rounds in sim
         for _ in range(num_rounds):
@@ -103,7 +120,7 @@ def simulate2(num_rounds, num_sims, min_bet=1, bet_spread=8,
                           for bankroll in value])  # Confusing List comprehens
 
     # Player advantage calc
-    player_advantage = (mean_bankroll - player_bankroll) / player_bankroll
+    player_advantage = (mean_bankroll - args.bankroll) / args.bankroll
 
     # Plot distributions
     plot_distr(final_bankrolls, mean_bankrolls, std_bankrolls, mean_bankroll,
